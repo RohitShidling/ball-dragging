@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ball</title>
+    <style>
+        .container{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .ball{
+            width: 50px;
+            height: 50px;
+            background: #000;
+            position: absolute;
+            border-radius: 100%;
+            cursor: pointer;
+            transition: transform 0.1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ball" id="ball"></div>
+    </div>
+</body>
+<script>const ball = document.getElementById('ball');
+    let isDragging = false;
+    let offsetX = 0;
+    let offsetY = 0;
+    
+    function startDragging(event) {
+        isDragging = true;
+        ball.style.cursor = 'grabbing';
+    
+        // Calculate the offset between the pointer and the ball's position
+        if (event.touches) {
+            offsetX = event.touches[0].clientX - ball.offsetLeft;
+            offsetY = event.touches[0].clientY - ball.offsetTop;
+        } else {
+            offsetX = event.clientX - ball.offsetLeft;
+            offsetY = event.clientY - ball.offsetTop;
+        }
+    }
+    
+    function stopDragging() {
+        isDragging = false;
+        ball.style.cursor = 'grab';
+    }
+    
+    function moveBall(event) {
+        if (!isDragging) return;
+    
+        let x, y;
+    
+        if (event.touches) {
+            x = event.touches[0].clientX;
+            y = event.touches[0].clientY;
+        } else {
+            x = event.clientX;
+            y = event.clientY;
+        }
+    
+        // Ensure the ball stays within the viewport
+        const ballWidth = ball.offsetWidth;
+        const ballHeight = ball.offsetHeight;
+        const maxLeft = window.innerWidth - ballWidth;
+        const maxTop = window.innerHeight - ballHeight;
+    
+        // Update the position of the ball
+        let newLeft = x - offsetX;
+        let newTop = y - offsetY;
+    
+        // Restrict ball movement within the screen bounds
+        if (newLeft < 0) newLeft = 0;
+        if (newLeft > maxLeft) newLeft = maxLeft;
+        if (newTop < 0) newTop = 0;
+        if (newTop > maxTop) newTop = maxTop;
+    
+        ball.style.left = `${newLeft}px`;
+        ball.style.top = `${newTop}px`;
+    }
+    
+    // Mouse events
+    ball.addEventListener('mousedown', startDragging);
+    document.addEventListener('mousemove', moveBall);
+    document.addEventListener('mouseup', stopDragging);
+    
+    // Touch events
+    ball.addEventListener('touchstart', startDragging);
+    document.addEventListener('touchmove', moveBall);
+    document.addEventListener('touchend', stopDragging);
+    
+
+
+
+</script>
+</html>
